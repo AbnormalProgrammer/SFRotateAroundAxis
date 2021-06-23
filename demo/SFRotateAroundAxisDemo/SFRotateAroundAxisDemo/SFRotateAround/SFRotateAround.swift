@@ -20,38 +20,48 @@ extension Float {
 }
 
 extension GLKMatrix4 {
-    /// 根据输入的归一化点坐标
-    /// 归一化的旋转轴
-    /// 以及旋转角度
-    /// 求出旋转以后的点坐标
-    /// 这里使用的是左手坐标系
+    /// 绕三维空间内的任意轴进行旋转
     /// - Parameters:
-    ///   - inputPoint: 输入的待旋转的归一化点坐标
-    ///   - axis: 旋转轴向量，这里是归一化的三维平面向量
-    ///   - radians: 旋转的弧度值，即，角速度
-    /// - Returns: 旋转以后的归一化点坐标
-    static func rotateAroundAxis(_ inputPoint:GLKVector3,_ axis:GLKVector3,_ radians:CGFloat) -> GLKVector3 {
-        guard axis.model() > 0 && radians != 0 else {
+    ///   - anyPoint: 待旋转的任意点坐标
+    ///   - axisStart: 旋转轴的起点
+    ///   - axisEnd: 旋转轴的终点
+    ///   - radian: 旋转的弧度
+    /// - Returns: 旋转后的点坐标
+    static func rotateAroundAnyAxis(_ anyPoint:GLKVector3,_ axisStart:GLKVector3,_ axisEnd:GLKVector3,_ radian:CGFloat) -> GLKVector3 {
+        let originalPoint:GLKVector3 = GLKVector3Subtract(anyPoint, axisStart)
+        let normalAxis:GLKVector3 = GLKVector3Subtract(axisEnd, axisStart)
+        let result:GLKVector3 = GLKMatrix4.rotateAroundNormalAxis(originalPoint, normalAxis, radian)
+        return GLKVector3Add(result, axisStart)
+    }
+    /// 在归一化空间内绕任意轴旋转
+    /// 即，旋转轴的原点在坐标原点。
+    /// 各个轴的范围在[-1,1]之内。
+    /// - Parameters:
+    ///   - inputPoint: 待旋转的点坐标
+    ///   - axis: 旋转轴的向量
+    ///   - radians: 旋转的弧度
+    /// - Returns: 旋转后的点坐标
+    static func rotateAroundNormalAxis(_ inputPoint:GLKVector3,_ axis:GLKVector3,_ radian:CGFloat) -> GLKVector3 {
+        guard axis.model() > 0 && radian != 0 else {
             return inputPoint
         }
-        let zComponent:Float = axis.z
-        let yzLength:Float = sqrtf(powf(axis.y, 2) + powf(zComponent, 2))
+        let yzLength:Float = sqrtf(powf(axis.y, 2) + powf(axis.z, 2))
         let originalVector4:GLKVector4 = GLKVector4MakeWithVector3(inputPoint, 0)
         let vectorLength:Float = axis.model()
         /*首先绕X轴旋转到XOY平面上去*/
         var rotateXMatrix:GLKMatrix4 = GLKMatrix4Identity
         if yzLength > 0 {
             let cos0:Float = axis.y / yzLength
-            let sin0:Float = -zComponent / yzLength
+            let sin0:Float = -axis.z / yzLength
             rotateXMatrix = GLKMatrix4.xRotationMatrix(sin0, cos0)
         }
         /*然后绕Z轴旋转到Y轴上面去*/
-        let cos1:Float = sqrtf(powf(axis.y, 2) + powf(zComponent, 2)) / vectorLength
+        let cos1:Float = sqrtf(powf(axis.y, 2) + powf(axis.z, 2)) / vectorLength
         let sin1:Float = axis.x / vectorLength
         let rotateZMatrix:GLKMatrix4 = GLKMatrix4.zRotationMatrix(sin1, cos1)
         /*此时正式绕Y轴旋转*/
-        let cos2:Float = cos(radians).toFloat()
-        let sin2:Float = sin(radians).toFloat()
+        let cos2:Float = cos(radian).toFloat()
+        let sin2:Float = sin(radian).toFloat()
         let rotateYMatrix:GLKMatrix4 = GLKMatrix4.yRotationMatrix(sin2, cos2)
         /*绕着Z旋转，转到原来在XOY平面上的位置*/
         let cos3:Float = cos1
@@ -61,7 +71,7 @@ extension GLKMatrix4 {
         var rotateReverseXMatrix:GLKMatrix4 = GLKMatrix4Identity
         if yzLength > 0 {
             let cos4:Float = axis.y / yzLength
-            let sin4:Float = zComponent / yzLength
+            let sin4:Float = axis.z / yzLength
             rotateReverseXMatrix = GLKMatrix4.xRotationMatrix(sin4, cos4)
         }
         var tempMatrix:GLKMatrix4 = GLKMatrix4Identity

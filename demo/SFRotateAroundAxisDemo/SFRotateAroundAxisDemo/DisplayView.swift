@@ -36,28 +36,20 @@ class DisplayView: UIImageView {
     
     private func installUI() -> Void {
         self.addSubview(self.earthView)
-        self.currentNormLocation = GLKVector3Make(-0.7, 0, 0)
-        /*通过终点减起点获取旋转轴向量，主要是为了让你看明白思想*/
-        self.axis = GLKVector3Make(0, -100, 30)
-        self.earthView.center = CGPoint.init(x: self.currentNormLocation!.x.toCGFloat() * self.bounds.size.width / 2 + self.bounds.size.width / 2, y: self.currentNormLocation!.y.toCGFloat() * self.bounds.size.height / 2 + self.bounds.size.height / 2)
+        self.currentLocation = GLKVector3Make(self.bounds.width.toFloat() / 7, self.bounds.height.toFloat() / 2, 0)
+        self.earthView.center = CGPoint.init(x: self.currentLocation!.x.toCGFloat(), y: self.currentLocation!.y.toCGFloat())
     }
     // MARK: - public interfaces
     // MARK: - actions
     @objc private func rotationAction() -> Void {
-        self.currentNormLocation = GLKMatrix4.rotateAroundAxis(self.currentNormLocation!, self.axis!, 0.02)
-        self.earthView.center = CGPoint.init(x: self.currentNormLocation!.x.toCGFloat() * self.bounds.size.width / 2 + self.bounds.size.width / 2, y: self.currentNormLocation!.y.toCGFloat() * self.bounds.size.height / 2 + self.bounds.size.height / 2)
-        /*这里利用Z坐标做一些效果*/
-        /*远小近大的效果*/
-        let scope:CGFloat = 15
-        self.earthView.bounds = CGRect.init(origin: CGPoint.zero, size: CGSize.init(width: 30 + scope * self.currentNormLocation!.z.toCGFloat(), height: 30 + scope * self.currentNormLocation!.z.toCGFloat()))
-        /*远暗近明的效果*/
-        self.earthView.alpha = 0.7 + 0.5 * self.currentNormLocation!.z.toCGFloat()
+        self.currentLocation = GLKMatrix4.rotateAroundAnyAxis(self.currentLocation!, GLKVector3Make(self.bounds.width.toFloat() / 2, self.bounds.height.toFloat() / 2, 0), GLKVector3Make(self.bounds.width.toFloat() / 2, self.bounds.height.toFloat() / 2 - 100, 30), self.palstance)
+        self.earthView.center = CGPoint.init(x: self.currentLocation!.x.toCGFloat(), y: self.currentLocation!.y.toCGFloat())
+        /*这里还利用Z坐标做一些效果，不过这里就不写了。*/
     }
     // MARK: - accessors
     /*角速度，弧度*/
     private let palstance:CGFloat = 0.02
-    private var axis:GLKVector3?
-    private var currentNormLocation:GLKVector3?
+    private var currentLocation:GLKVector3?
     private var atuoRotationTimer:CADisplayLink?
     lazy private var earthView:UIImageView = {
         let result:UIImageView = UIImageView.init()
