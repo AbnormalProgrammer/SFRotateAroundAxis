@@ -24,8 +24,8 @@ GLKMatrix4.rotateAroundNormalAxis(self.currentLocation!, GLKVector3Make(0, -1, 0
 ```
 ## 适用环境
 iOS 14.5及以上
-swift 5.0
-XCode 12
+<br>swift 5.0
+<br>XCode 12
 ## 联系方式
 我的profile里面有联系方式
 ## 许可证
