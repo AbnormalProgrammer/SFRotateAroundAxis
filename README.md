@@ -16,11 +16,9 @@
 ## 如何使用？
 该扩展涉及到了2个接口，分别是`static func rotateAroundAnyAxis(_ anyPoint:GLKVector3,_ axisStart:GLKVector3,_ axisEnd:GLKVector3,_ radian:CGFloat) -> GLKVector3`和`static func rotateAroundNormalAxis(_ inputPoint:GLKVector3,_ axis:GLKVector3,_ radian:CGFloat) -> GLKVector3`。
 
-`static func rotateAroundAnyAxis(_ anyPoint:GLKVector3,_ axisStart:GLKVector3,_ axisEnd:GLKVector3,_ radian:CGFloat) -> GLKVector3`，给定UIKit三维空间中任何一个点坐标，旋转轴的起点，旋转轴的终点，旋转的弧度，就可以计算出该点绕旋转轴旋转以后的点坐标。
-具体用法可以参考`DisplayView.swift`中的`@objc private func rotationAction() -> Void`方法
+`static func rotateAroundAnyAxis(_ anyPoint:GLKVector3,_ axisStart:GLKVector3,_ axisEnd:GLKVector3,_ radian:CGFloat) -> GLKVector3`，给定UIKit三维空间中任何一个点坐标，旋转轴的起点，旋转轴的终点，旋转的弧度，就可以计算出该点绕旋转轴旋转以后的点坐标。  具体用法可以参考`DisplayView.swift`中的`@objc private func rotationAction() -> Void`方法
 
-`static func rotateAroundNormalAxis(_ inputPoint:GLKVector3,_ axis:GLKVector3,_ radian:CGFloat) -> GLKVector3`一般用于单位空间坐标系内的旋转，即，你设定的空间，在归一化以后即为从-1到1的空间，坐标系的原点是旋转轴的起点。
-调用的方式为
+`static func rotateAroundNormalAxis(_ inputPoint:GLKVector3,_ axis:GLKVector3,_ radian:CGFloat) -> GLKVector3`一般用于单位空间坐标系内的旋转，即，你设定的空间，在归一化以后即为从-1到1的空间，坐标系的原点是旋转轴的起点。  调用的方式为
 ```
 GLKMatrix4.rotateAroundNormalAxis(self.currentLocation!, GLKVector3Make(0, -1, 0), 0.02)
 ```
