@@ -14,7 +14,7 @@
 单位空间指的是3个坐标轴范围全部是[-1,1]的3维空间。
 旋转轴向量的起点是坐标原点，旋转轴的终点是空间内任意点，但是不能与起点重合，另外，终点也不一定必须是单位空间内的点。首先把旋转轴旋转到与Y轴负向重合，然后旋转输入的角度，最后把旋转轴恢复到原来的位置。这种旋转轴的变换用的是计算机图形学中的矩阵变换，有兴趣的同学可以去深入了解一下绕任意轴旋转相关的知识。之所以让旋转轴与Y轴负向重合，是因为这符合一般感觉。
 ## 如何使用？
-首先`import GLKit`<br>
+首先`import GLKit`。<br>
 该扩展涉及到了2个接口，分别是`static func rotateAroundAnyAxis(_ anyPoint:GLKVector3,_ axisStart:GLKVector3,_ axisEnd:GLKVector3,_ radian:CGFloat) -> GLKVector3`和`static func rotateAroundNormalAxis(_ inputPoint:GLKVector3,_ axis:GLKVector3,_ radian:CGFloat) -> GLKVector3`。
 
 `static func rotateAroundAnyAxis(_ anyPoint:GLKVector3,_ axisStart:GLKVector3,_ axisEnd:GLKVector3,_ radian:CGFloat) -> GLKVector3`，给定UIKit三维空间中任何一个点坐标，旋转轴的起点，旋转轴的终点，旋转的弧度，就可以计算出该点绕旋转轴旋转以后的点坐标。<br>具体用法可以参考`DisplayView.swift`中的`@objc private func rotationAction() -> Void`方法  
