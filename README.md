@@ -2,6 +2,7 @@
 这是个让UIKit空间内的任意点绕任意轴旋转的扩展接口。
 ## 示例
 ![示例](https://github.com/AbnormalProgrammer/SFRotateAroundAxis/raw/main/resources/示例.gif)
+![示例2](https://github.com/AbnormalProgrammer/SFRotateAroundAxis/raw/main/resources/demo.gif)
 ## 它是什么？
 它是个扩展，主要是扩展了`GLKMatrix4`，是它的类方法。另外还包含了几个辅助性的相关扩展接口。
 ## 它有什么用？
